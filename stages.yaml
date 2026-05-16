@@ -1,0 +1,70 @@
+stages:
+  - id: record
+    label: Record
+    description: Capture raw audio and video
+    actions:
+      - id: prepare_space
+        label: Prepare recording space
+        type: manual
+      - id: start_recording
+        label: Start recording
+        type: manual
+      - id: stop_recording
+        label: Stop recording and save files
+        type: manual
+
+  - id: edit
+    label: Edit
+    description: Trim and clean the raw recording
+    actions:
+      - id: review_raw
+        label: Review raw footage
+        type: manual
+      - id: trim_cuts
+        label: Trim and make cuts
+        type: manual
+      - id: add_intro_outro
+        label: Add intro and outro
+        type: manual
+
+  - id: mix
+    label: Mix
+    description: Normalize and balance audio levels
+    actions:
+      - id: noise_reduction
+        label: Noise reduction
+        type: manual
+      - id: normalize_loudness
+        label: Normalize loudness
+        type: manual
+      - id: balance_levels
+        label: Balance levels
+        type: manual
+
+  - id: export
+    label: Export
+    description: Render final files
+    actions:
+      - id: export_video
+        label: Export video file
+        type: manual
+      - id: export_audio
+        label: Export audio file
+        type: manual
+      - id: generate_thumbnail
+        label: Generate thumbnail
+        type: manual
+
+  - id: publish
+    label: Publish
+    description: Upload to platforms and post show notes
+    actions:
+      - id: upload_video
+        label: Upload video
+        type: manual
+      - id: upload_podcast
+        label: Upload podcast
+        type: manual
+      - id: post_show_notes
+        label: Post show notes
+        type: manual
