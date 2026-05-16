@@ -139,7 +139,7 @@ No UI. Sessions, stages, and actions work from the terminal.
 - [x] 1.4 Session model + JSON persistence (~/.rec/sessions/)
 - [x] 1.5 Stage state machine (advance, revert cross-stage, skip)
 - [x] 1.6 Action runner (manual, shell, open, script, prompt)
-- [ ] 1.7 Undo stack (cross-stage, logs inverse operations)
+- [x] 1.7 Undo stack (cross-stage, logs inverse operations)
 
 ### MVP 2 — UI Shell
 Visual layer wired to the core. Buttons stubbed, no real action execution yet.
