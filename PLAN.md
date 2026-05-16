@@ -135,7 +135,7 @@ No UI. Sessions, stages, and actions work from the terminal.
 
 - [x] 1.1 Project structure + requirements.txt
 - [x] 1.2 stages.yaml (default pipeline, all actions typed as manual, no shell commands)
-- [ ] 1.3 Config models + loader (Stage, Action, PipelineConfig dataclasses)
+- [x] 1.3 Config models + loader (Stage, Action, PipelineConfig dataclasses)
 - [ ] 1.4 Session model + JSON persistence (~/.podcast-tool/sessions/)
 - [ ] 1.5 Stage state machine (advance, revert cross-stage, skip)
 - [ ] 1.6 Action runner (manual, shell, open, script, prompt)
