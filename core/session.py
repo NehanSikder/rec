@@ -121,6 +121,12 @@ def load_session(session_id: str) -> Session:
     return Session.from_dict(data)
 
 
+def delete_session(session_id: str) -> None:
+    path = SESSIONS_DIR / f"{session_id}.json"
+    if path.exists():
+        path.unlink()
+
+
 def list_sessions() -> List[Dict]:
     if not SESSIONS_DIR.exists():
         return []
