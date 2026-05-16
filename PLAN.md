@@ -137,7 +137,7 @@ No UI. Sessions, stages, and actions work from the terminal.
 - [x] 1.2 stages.yaml (default pipeline, all actions typed as manual, no shell commands)
 - [x] 1.3 Config models + loader (Stage, Action, PipelineConfig dataclasses)
 - [x] 1.4 Session model + JSON persistence (~/.rec/sessions/)
-- [ ] 1.5 Stage state machine (advance, revert cross-stage, skip)
+- [x] 1.5 Stage state machine (advance, revert cross-stage, skip)
 - [ ] 1.6 Action runner (manual, shell, open, script, prompt)
 - [ ] 1.7 Undo stack (cross-stage, logs inverse operations)
 
