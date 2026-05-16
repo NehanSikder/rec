@@ -144,19 +144,19 @@ No UI. Sessions, stages, and actions work from the terminal.
 ### MVP 2 — UI Shell
 Visual layer wired to the core. Buttons stubbed, no real action execution yet.
 
-- [ ] 2.1 App window + layout skeleton (CustomTkinter)
-- [ ] 2.2 Progress bar component — colored nodes + connecting line
-- [ ] 2.3 Stage body + action list with status icons (✓ done / ● active / ○ todo)
-- [ ] 2.4 Button row: Run, Mark Complete, Skip, Undo, Back, Next
-- [ ] 2.5 Session picker screen (launch screen — new session or load existing)
-- [ ] 2.6 Each session opens in its own window
+- [x] 2.1 App window + layout skeleton (CustomTkinter)
+- [x] 2.2 Progress bar component — colored nodes + connecting line
+- [x] 2.3 Stage body + action list with status icons (✓ done / ● active / ○ todo)
+- [x] 2.4 Button row: Run, Mark Complete, Skip, Undo, Back, Next
+- [x] 2.5 Session picker screen (launch screen — new session or load existing)
+- [x] 2.6 Each session opens in its own window
 
 ### MVP 3 — Full Integration
 Wire UI to core. Everything works end to end.
 
-- [ ] 3.1 Wire Run button → action runner
-- [ ] 3.2 Wire Mark Complete + Skip → stage state machine
-- [ ] 3.3 Wire Undo → undo stack (cross-stage)
-- [ ] 3.4 Wire Back/Next → stage navigation, progress bar updates live
-- [ ] 3.5 Persist session state to JSON on every action
-- [ ] 3.6 run.py bootstrap (auto-installs deps, launches app)
+- [x] 3.1 Wire Run button → action runner
+- [x] 3.2 Wire Mark Complete + Skip → stage state machine
+- [x] 3.3 Wire Undo → undo stack (cross-stage)
+- [x] 3.4 Wire Back/Next → stage navigation, progress bar updates live
+- [x] 3.5 Persist session state to JSON on every action
+- [x] 3.6 run.py bootstrap (auto-installs deps, launches app)
