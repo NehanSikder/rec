@@ -1,6 +1,6 @@
 from __future__ import annotations
 from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from config.loader import load_pipeline
 from core.session import Session
 from app.components.progress_bar import ProgressBar
@@ -8,6 +8,8 @@ from app.components.action_list import ActionList
 
 
 class MainWindow(QMainWindow):
+    window_closed = Signal()
+
     def __init__(self, session: Session) -> None:
         super().__init__()
         self.session = session
@@ -27,7 +29,7 @@ class MainWindow(QMainWindow):
 
         # Header row: home button + session title
         header = QHBoxLayout()
-        home_btn = QPushButton("← Sessions")
+        home_btn = QPushButton("←")
         home_btn.setObjectName("secondary")
         home_btn.setFixedWidth(100)
         home_btn.clicked.connect(self._on_home)
@@ -52,6 +54,10 @@ class MainWindow(QMainWindow):
     def _on_home(self) -> None:
         self.go_home = True
         self.close()
+
+    def closeEvent(self, event) -> None:
+        self.window_closed.emit()
+        super().closeEvent(event)
 
     def refresh(self) -> None:
         self.progress_bar.update_state(self.session, self.pipeline)

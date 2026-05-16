@@ -23,7 +23,7 @@ def start() -> None:
 
         # Block until this window closes, then check if user wants home
         loop = QEventLoop()
-        window.destroyed.connect(loop.quit)
+        window.window_closed.connect(loop.quit)
         loop.exec()
 
         if not window.go_home:
