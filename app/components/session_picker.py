@@ -1,91 +1,124 @@
 from __future__ import annotations
-import customtkinter as ctk
+from PySide6.QtWidgets import (
+    QDialog, QVBoxLayout, QHBoxLayout, QLabel,
+    QLineEdit, QPushButton, QFrame, QScrollArea,
+    QWidget, QSizePolicy,
+)
+from PySide6.QtCore import Qt
 from config.loader import load_pipeline
-from core.session import create_session, load_session, list_sessions
+from core.session import Session, create_session, load_session, list_sessions
 
 
-class SessionPickerWindow(ctk.CTkToplevel):
-    def __init__(self, root) -> None:
-        super().__init__(root)
-        self.root = root
-        self.title("rec — Sessions")
-        self.geometry("480x520")
-        self.resizable(False, False)
-        self.protocol("WM_DELETE_WINDOW", self._on_close)
+class SessionPickerDialog(QDialog):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+        self.selected_session: Session | None = None
+        self.setWindowTitle("rec")
+        self.setFixedSize(460, 520)
         self._build()
 
     def _build(self) -> None:
-        self.grid_columnconfigure(0, weight=1)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(32, 32, 32, 32)
+        layout.setSpacing(0)
 
-        ctk.CTkLabel(self, text="rec", font=ctk.CTkFont(size=28, weight="bold")).grid(
-            row=0, column=0, pady=(32, 2)
-        )
-        ctk.CTkLabel(self, text="Production Pipeline Manager", text_color="#888").grid(
-            row=1, column=0, pady=(0, 24)
-        )
+        title = QLabel("rec")
+        title.setObjectName("title")
+        title.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title)
 
-        # New session
-        new_frame = ctk.CTkFrame(self, corner_radius=8)
-        new_frame.grid(row=2, column=0, padx=32, sticky="ew", pady=(0, 20))
-        new_frame.grid_columnconfigure(0, weight=1)
+        subtitle = QLabel("Production Pipeline Manager")
+        subtitle.setObjectName("subtitle")
+        subtitle.setAlignment(Qt.AlignCenter)
+        layout.addWidget(subtitle)
+        layout.addSpacing(28)
 
-        ctk.CTkLabel(new_frame, text="New Session", font=ctk.CTkFont(size=13, weight="bold")).grid(
-            row=0, column=0, columnspan=2, sticky="w", padx=16, pady=(12, 4)
-        )
-        self.title_entry = ctk.CTkEntry(new_frame, placeholder_text="Episode title...")
-        self.title_entry.grid(row=1, column=0, padx=16, pady=(0, 12), sticky="ew")
-        self.title_entry.bind("<Return>", lambda e: self._create())
+        # New session card
+        card = QFrame()
+        card.setObjectName("card")
+        card_layout = QVBoxLayout(card)
+        card_layout.setContentsMargins(16, 14, 16, 14)
+        card_layout.setSpacing(8)
 
-        ctk.CTkButton(new_frame, text="Create", width=80, command=self._create).grid(
-            row=1, column=1, padx=(0, 16), pady=(0, 12)
-        )
+        card_layout.addWidget(QLabel("New Session"))
 
-        # Existing sessions
+        input_row = QHBoxLayout()
+        self.title_entry = QLineEdit()
+        self.title_entry.setPlaceholderText("Episode title...")
+        self.title_entry.returnPressed.connect(self._create)
+        input_row.addWidget(self.title_entry)
+
+        create_btn = QPushButton("Create")
+        create_btn.setFixedWidth(80)
+        create_btn.clicked.connect(self._create)
+        input_row.addWidget(create_btn)
+        card_layout.addLayout(input_row)
+
+        layout.addWidget(card)
+        layout.addSpacing(20)
+
+        # Recent sessions
         sessions = list_sessions()
         if sessions:
-            ctk.CTkLabel(self, text="Recent Sessions", font=ctk.CTkFont(size=13, weight="bold"),
-                         text_color="#888").grid(row=3, column=0, padx=32, sticky="w", pady=(0, 6))
+            section = QLabel("Recent Sessions")
+            section.setObjectName("section")
+            layout.addWidget(section)
+            layout.addSpacing(6)
 
-            scroll = ctk.CTkScrollableFrame(self, corner_radius=8, height=220)
-            scroll.grid(row=4, column=0, padx=32, sticky="nsew", pady=(0, 24))
-            scroll.grid_columnconfigure(0, weight=1)
-            self.grid_rowconfigure(4, weight=1)
+            scroll = QScrollArea()
+            scroll.setWidgetResizable(True)
+            scroll.setFrameShape(QFrame.NoFrame)
 
-            for i, meta in enumerate(sessions):
-                row_frame = ctk.CTkFrame(scroll, fg_color="transparent")
-                row_frame.grid(row=i, column=0, sticky="ew", pady=2)
-                row_frame.grid_columnconfigure(0, weight=1)
+            container = QWidget()
+            container.setStyleSheet("background-color: #222222; border-radius: 8px;")
+            container_layout = QVBoxLayout(container)
+            container_layout.setContentsMargins(12, 8, 12, 8)
+            container_layout.setSpacing(2)
 
-                ctk.CTkLabel(row_frame, text=meta["title"], anchor="w",
-                             font=ctk.CTkFont(size=13)).grid(row=0, column=0, sticky="w", padx=8)
-                ctk.CTkLabel(row_frame, text=meta["created_at"][:10], anchor="e",
-                             text_color="#666", font=ctk.CTkFont(size=11)).grid(row=0, column=1, padx=8)
-                ctk.CTkButton(row_frame, text="Open", width=60, height=26,
-                              font=ctk.CTkFont(size=12),
-                              command=lambda sid=meta["id"]: self._open(sid)).grid(row=0, column=2, padx=(0, 4))
+            for meta in sessions:
+                row = QWidget()
+                row.setStyleSheet("background: transparent;")
+                row_layout = QHBoxLayout(row)
+                row_layout.setContentsMargins(4, 6, 4, 6)
+
+                name_lbl = QLabel(meta["title"])
+                name_lbl.setStyleSheet("background: transparent;")
+                name_lbl.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+                date_lbl = QLabel(meta["created_at"][:10])
+                date_lbl.setStyleSheet("color: #555555; font-size: 11px; background: transparent;")
+
+                open_btn = QPushButton("Open")
+                open_btn.setObjectName("run_btn")
+                open_btn.setFixedSize(60, 28)
+                open_btn.clicked.connect(lambda checked=False, sid=meta["id"]: self._open(sid))
+
+                row_layout.addWidget(name_lbl)
+                row_layout.addWidget(date_lbl)
+                row_layout.addSpacing(8)
+                row_layout.addWidget(open_btn)
+                container_layout.addWidget(row)
+
+            container_layout.addStretch()
+            scroll.setWidget(container)
+            layout.addWidget(scroll)
         else:
-            ctk.CTkLabel(self, text="No sessions yet.", text_color="#555").grid(
-                row=3, column=0, pady=16
-            )
+            no_sessions = QLabel("No sessions yet.")
+            no_sessions.setObjectName("subtitle")
+            no_sessions.setAlignment(Qt.AlignCenter)
+            layout.addWidget(no_sessions)
+            layout.addStretch()
 
     def _create(self) -> None:
-        title = self.title_entry.get().strip()
+        title = self.title_entry.text().strip()
         if not title:
             return
         pipeline = load_pipeline()
         stage_ids = [s.id for s in pipeline.stages]
         action_ids = {s.id: [a.id for a in s.actions] for s in pipeline.stages}
-        session = create_session(title, stage_ids, action_ids)
-        self._launch(session)
+        self.selected_session = create_session(title, stage_ids, action_ids)
+        self.accept()
 
     def _open(self, session_id: str) -> None:
-        session = load_session(session_id)
-        self._launch(session)
-
-    def _launch(self, session) -> None:
-        from app.windows.main_window import MainWindow
-        self.destroy()
-        MainWindow(session)
-
-    def _on_close(self) -> None:
-        self.root.destroy()
+        self.selected_session = load_session(session_id)
+        self.accept()

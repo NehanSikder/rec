@@ -1,13 +1,19 @@
 from __future__ import annotations
-import customtkinter as ctk
-from app.components.session_picker import SessionPickerWindow
-
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("blue")
+import sys
+from PySide6.QtWidgets import QApplication
+from app.style import DARK_STYLE
 
 
 def start() -> None:
-    root = ctk.CTk()
-    root.withdraw()
-    SessionPickerWindow(root)
-    root.mainloop()
+    app = QApplication(sys.argv)
+    app.setStyleSheet(DARK_STYLE)
+
+    from app.components.session_picker import SessionPickerDialog
+    picker = SessionPickerDialog()
+    picker.exec()
+
+    if picker.selected_session:
+        from app.windows.main_window import MainWindow
+        window = MainWindow(picker.selected_session)
+        window.show()
+        sys.exit(app.exec())
